@@ -1,8 +1,15 @@
 # Kubernetes Secret Management Handbook
 
 ## Chapter 1 - Example 1
-This example provides a walktrough to build the binary of our "Hello World" Golang flavor and run it using Podman Dekstop. 
+### Overview and outcomes
+This example provides a walktrough to build the binary of our "Hello World" Golang flavor, run it using Podman Dekstop, then deploy the same application on Kubernetes. 
 
+The goals are too:
+- refresh knowledge about building a container image
+- perform the build and run on your local environment
+- deploy on Kubernetes and discover the differences with Podman (or Docker)
+
+### Get your environment ready
 First clone the git repository:  
 ```
 git clone https://github.com/PacktPublishing/Kubernetes-Secret-Management-Handbook.git 
@@ -40,7 +47,8 @@ There is a 3 items:
 * hello; a folder containing the ```main.go``` file containing the code of our "Hello World".
 * readme.md; this how-to file.
 
-## The Golang code
+## Build
+### The Golang code
 The "Hello World" code perform the followings:
 
 * start a webserver on port 8080
@@ -85,7 +93,7 @@ func main() {
 }
 ```
 
-## The Dockerfile
+### The Dockerfile
 The Dockerfile perform the followings:
 
 * fetch the Red Hat Universal Base Image with the Golang Toolset as a build image only
@@ -112,7 +120,7 @@ EXPOSE 8080
 ENTRYPOINT ["./hello"]
 ```
 
-## Build the "Hello World" image from the Podman Desktop 
+### Build the "Hello World" image from the Podman Desktop 
 
 Within Podman Desktop, click on the *Cloud* icon leading to the container images:
 ![](./images/podmand-desktop-01.png)
@@ -132,7 +140,7 @@ Back to the container image lists, the newly container image we built is now ava
 Browse the details of the "Hello World" container image:
 ![](./images/podmand-desktop-06.png)
 
-## Build the "Hello World" image from the CLI 
+### Build the "Hello World" image from the CLI 
 From the path ```Kubernetes-Secret-Management-Handbook/ch01/example01/```, run the following command:
 
 ```bash 
@@ -183,7 +191,9 @@ registry.access.redhat.com/ubi8/go-toolset  <none>      a2ef5175c774  12 days ag
 registry.access.redhat.com/ubi8/ubi-micro   <none>      55db292ce376  5 weeks ago     30.4 MB
 ```
 
-## Run "Hello World" using Podman Desktop
+## Run
+
+### Run "Hello World" using Podman Desktop
 
 To run our freshly built container "Hello World" from Podman Desktop, click on the *Play* icon:
 ![](./images/podmand-desktop-07.png)
@@ -199,4 +209,6 @@ The *Logs* tab will open a console showing our container logs. Open an Internet 
 ![](./images/podmand-desktop-10.png)
 
 **Congratulation! You just built and ran your first container application.** 
+
+### Run "Hello World using Kubernetes
 
