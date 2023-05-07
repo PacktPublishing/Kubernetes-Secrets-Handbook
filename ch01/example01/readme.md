@@ -216,7 +216,7 @@ The *Logs* tab will open a console showing our container logs. Open an Internet 
 
 **Congratulation! You just built and ran your first container application.** 
 
-### Run "Hello World using Kubernetes
+### Run "Hello World using Kubernetes from Podman Desktop
 
 Let's stop the "Hello World" container running with Podman. 
 
@@ -284,8 +284,6 @@ Let's go back into Podman Desktop and generate the deployment manifest. To do le
 
 This will open the following window with the deployment manifest for our "Hello World" container. As you can see, the major difference with running a container with Podman (or Docker) is that you have to provide a Pod object definition that will be sent to the ```kube-apiserver``` to process.  
 
-
-
 Let's have a copy/past of this output into a file that you will name ```k8s-hello_world.yaml```. The content should be similar to:
 
 ```YAML
@@ -318,10 +316,91 @@ Now, you can click on the "Deploy to Kubernetes" icon:
 This will open the following window where you will have to tick the box "Create an Ingress..." and then click the "Deploy" button:
 ![](./images/podmand-desktop-14.png)
 
-This will update the window with the status and you can click the "Done" button:
+This will update the window with the status, note the ingress URL to access the "Hello World" is ***localhost:9090*** (it might be different with your setup), and you can click the "Done" button:
 ![](./images/podmand-desktop-15.png)
 
-Back to the main window, let's go in the Pod section:
+Back to the main window, let's go in the Pod section and click on our newly created deployment:
 ![](./images/podmand-desktop-16.png)
 
+Let's open an Internet Browser with the URL ***http://localhost:9090*** (it might be different with your setup) and update the URL a couple of time with ***http://localhost:9090/test*** or ***http://localhost:9090/packt***:  
+![](./images/podmand-desktop-17.png)
+
+Let's get into the "Logs" tab and check the Podman Desktop Pod Logs window to verify that we have the logs being generated:
+![](./images/podmand-desktop-17.png)
+
+### Run "Hello World using Kubernetes from the CLI
+Now that we have succeeded to deploy our application using the Podman Desktop, let's do it via the CLI. 
+
+First, let's gather the entire object list of our Kubernetes cluster:
+```
+kubectl get all -A |grep laughing
+```
+```
+NAMESPACE            NAME                                                     READY   STATUS      RESTARTS   AGE
+default              pod/laughingshtern-pod                                   1/1     Running     0          137m
+kube-system          pod/coredns-787d4945fb-qhd5q                             1/1     Running     0          2d4h
+kube-system          pod/coredns-787d4945fb-qnzcs                             1/1     Running     0          2d4h
+kube-system          pod/etcd-kind-cluster-control-plane                      1/1     Running     0          2d4h
+kube-system          pod/kindnet-96hng                                        1/1     Running     0          2d4h
+kube-system          pod/kube-apiserver-kind-cluster-control-plane            1/1     Running     0          2d4h
+kube-system          pod/kube-controller-manager-kind-cluster-control-plane   1/1     Running     0          2d4h
+kube-system          pod/kube-proxy-85jvn                                     1/1     Running     0          2d4h
+kube-system          pod/kube-scheduler-kind-cluster-control-plane            1/1     Running     0          2d4h
+local-path-storage   pod/local-path-provisioner-75f5b54ffd-w4bkg              1/1     Running     0          2d4h
+projectcontour       pod/contour-74866bdd99-98t46                             1/1     Running     0          2d4h
+projectcontour       pod/contour-74866bdd99-l5wkf                             1/1     Running     0          2d4h
+projectcontour       pod/contour-certgen-v1.24.2-m5hxw                        0/1     Completed   0          2d4h
+projectcontour       pod/envoy-6wmd2                                          2/2     Running     0          2d4h
+
+NAMESPACE        NAME                              TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+default          service/kubernetes                ClusterIP      10.96.0.1       <none>        443/TCP                      2d4h
+default          service/laughingshtern-pod-8080   ClusterIP      10.96.135.26    <none>        8080/TCP                     137m
+kube-system      service/kube-dns                  ClusterIP      10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP       2d4h
+projectcontour   service/contour                   ClusterIP      10.96.148.178   <none>        8001/TCP                     2d4h
+projectcontour   service/envoy                     LoadBalancer   10.96.72.220    <pending>     80:32009/TCP,443:31802/TCP   2d4h
+
+NAMESPACE        NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system      daemonset.apps/kindnet      1         1         1       1            1           kubernetes.io/os=linux   2d4h
+kube-system      daemonset.apps/kube-proxy   1         1         1       1            1           kubernetes.io/os=linux   2d4h
+projectcontour   daemonset.apps/envoy        1         1         1       1            1           <none>                   2d4h
+
+NAMESPACE            NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+kube-system          deployment.apps/coredns                  2/2     2            2           2d4h
+local-path-storage   deployment.apps/local-path-provisioner   1/1     1            1           2d4h
+projectcontour       deployment.apps/contour                  2/2     2            2           2d4h
+
+NAMESPACE            NAME                                                DESIRED   CURRENT   READY   AGE
+kube-system          replicaset.apps/coredns-787d4945fb                  2         2         2       2d4h
+local-path-storage   replicaset.apps/local-path-provisioner-75f5b54ffd   1         1         1       2d4h
+projectcontour       replicaset.apps/contour-74866bdd99                  2         2         2       2d4h
+
+NAMESPACE        NAME                                COMPLETIONS   DURATION   AGE
+projectcontour   job.batch/contour-certgen-v1.24.2   1/1           16s        2d4h
+```
+
+What we are insterested in are the following objects:
+```
+NAMESPACE            NAME                                                     READY   STATUS      RESTARTS   AGE
+default              pod/laughingshtern-pod                                   1/1     Running     0          137m
+
+NAMESPACE        NAME                              TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+default          service/laughingshtern-pod-8080   ClusterIP      10.96.135.26    <none>        8080/TCP                     137m
+```
+being, in order, the Pod in which our container runs and the Service allowing the access via the ingress URL. Let's delete them!
+
+the Pod:
+```
+kubectl delete pod/laughingshtern-pod
+```
+```
+pod "laughingshtern-pod" deleted
+```
+
+the Service:
+```
+kubectl delete service/laughingshtern-pod-8080
+```
+```
+service "laughingshtern-pod-8080" deleted
+```
 
