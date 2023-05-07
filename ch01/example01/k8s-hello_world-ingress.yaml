@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2023-05-07T17:57:03Z"
+  name: laughingshtern-pod-8080
+  namespace: default
+  resourceVersion: "80233"
+  uid: 8d95eff1-b028-4b94-ad54-5fa50d196a0e
+spec:
+  clusterIP: 10.96.135.26
+  clusterIPs:
+  - 10.96.135.26
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: laughingshtern-pod-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: laughingshtern-pod
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

@@ -386,9 +386,44 @@ default              pod/laughingshtern-pod                                   1/
 NAMESPACE        NAME                              TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
 default          service/laughingshtern-pod-8080   ClusterIP      10.96.135.26    <none>        8080/TCP                     137m
 ```
-being, in order, the Pod in which our container runs and the Service allowing the access via the ingress URL. Let's delete them!
+being, in order, the Pod in which our container runs and the Service allowing the access via the ingress URL. The second object was created by Podman Desktop for us and we did not have a copy the YAML definition to recreate it. Let's get the output of this service in a new file called ```k8s-hello_world-ingress.yaml``` 
 
-the Pod:
+```
+kubectl get service/laughingshtern-pod-8080 -o yaml
+```
+```YAML
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2023-05-07T17:57:03Z"
+  name: laughingshtern-pod-8080
+  namespace: default
+  resourceVersion: "80233"
+  uid: 8d95eff1-b028-4b94-ad54-5fa50d196a0e
+spec:
+  clusterIP: 10.96.135.26
+  clusterIPs:
+  - 10.96.135.26
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: laughingshtern-pod-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: laughingshtern-pod
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+```
+
+Now that we have all the necessary object definitions we can delete the running ones!
+
+The Pod:
 ```
 kubectl delete pod/laughingshtern-pod
 ```
@@ -396,7 +431,7 @@ kubectl delete pod/laughingshtern-pod
 pod "laughingshtern-pod" deleted
 ```
 
-the Service:
+The Service:
 ```
 kubectl delete service/laughingshtern-pod-8080
 ```
@@ -404,3 +439,116 @@ kubectl delete service/laughingshtern-pod-8080
 service "laughingshtern-pod-8080" deleted
 ```
 
+Now we can recreate the Pod using the YAML file ```k8s-hello_world.yaml``` we saved earlier:
+```
+kubectl create -f k8s-hello_world.yaml
+```
+```
+pod/laughingshtern-pod created
+```
+
+Let's check if it is up and running:
+```
+kubectl get pod/laughingshtern-pod                      
+```
+```
+NAME                 READY   STATUS    RESTARTS   AGE
+laughingshtern-pod   1/1     Running   0          44s
+```
+
+Let's inspect the internals of our Pod:
+```
+kubectl describe pod/laughingshtern-pod
+```
+```
+Name:             laughingshtern-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             kind-cluster-control-plane/10.89.0.2
+Start Time:       Sun, 07 May 2023 22:23:47 +0200
+Labels:           app=laughingshtern-pod
+Annotations:      io.podman.annotations.ulimit: nofile=524288:524288,nproc=7252:7252
+Status:           Running
+IP:               10.244.0.11
+IPs:
+  IP:  10.244.0.11
+Containers:
+  laughingshtern:
+    Container ID:   containerd://8c0b0656039ec86c2135fe4216f6c1ecc0c7e93fdbe69fd3b066122b32725037
+    Image:          localhost/hello-path:0.1
+    Image ID:       docker.io/library/import-2023-05-07@sha256:887af5aab69a9a153d177ae7ffc9ae6ceb04629e2e8da08a7e05e4f3b0052ef7
+    Port:           8080/TCP
+    Host Port:      8080/TCP
+    State:          Running
+      Started:      Sun, 07 May 2023 22:23:47 +0200
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-nzmss (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-nzmss:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  86s   default-scheduler  Successfully assigned default/laughingshtern-pod to kind-cluster-control-plane
+  Normal  Pulled     86s   kubelet            Container image "localhost/hello-path:0.1" already present on machine
+  Normal  Created    86s   kubelet            Created container laughingshtern
+  Normal  Started    86s   kubelet            Started container laughingshtern
+```
+
+From the CLI, we can check if we can access our "Hello World" application:
+```
+curl localhost:9090
+```
+```
+curl: (52) Empty reply from server
+```
+You could also try the port 8080 which was assigned at the container level. 
+
+Now, let's create the service:
+```
+kubectl create -f k8s-hello_world-ingress.yaml
+```
+```
+service/laughingshtern-pod-8080 created
+```
+
+Now, to check again the access to our "Hello World" application:
+```
+curl localhost:9090
+```
+```
+Hello from URL path: /
+Try to add /packt as a path.
+```
+Let's access the URL a couple of time with ***http://localhost:9090/test*** or ***http://localhost:9090/packt***
+
+And finally, like with Podman Desktop, you can check the logs too:
+```
+kubectl logs pod/laughingshtern-pod
+```
+```
+Kubernetes Secret Management Handbook - Chapter 1 - Example 1 - Hello World
+--> Server running on http://localhost:8080
+User requested the URL path: /
+User requested the URL path: /test
+User requested the URL path: /pack
+User requested the URL path: /packt
+```
