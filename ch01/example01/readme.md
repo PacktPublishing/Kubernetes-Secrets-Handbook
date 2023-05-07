@@ -214,8 +214,6 @@ This is due to the fact that we did not give. Click on the container entry:
 The *Logs* tab will open a console showing our container logs. Open an Internet Browser and type type in the URL shown in the logs ```https://localhost:8080```. This should shows a message in the browser as well as in the container logs. Change the URL path with ```/packt``` or anything else and observe the behavior.  
 ![](./images/podmand-desktop-10.png)
 
-**Congratulation! You just built and ran your first container application.** 
-
 ### Run "Hello World using Kubernetes from Podman Desktop
 
 Let's stop the "Hello World" container running with Podman. 
@@ -552,3 +550,13 @@ User requested the URL path: /test
 User requested the URL path: /pack
 User requested the URL path: /packt
 ```
+
+## Conclusion
+**Congratulation! You just built and ran your first container application.** 
+ 
+With this first example, we have:
+
+- built an application from its source and containerized it
+- successfully ran and accessed it with Podman Desktop
+- discover the object definition for a Pod and Service and used them to deployed and accessed the application running on Kubernetes
+
