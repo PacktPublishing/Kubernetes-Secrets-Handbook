@@ -315,7 +315,13 @@ spec:
 Now, you can click on the "Deploy to Kubernetes" icon:
 ![](./images/podmand-desktop-13.png)
 
+This will open the following window where you will have to tick the box "Create an Ingress..." and then click the "Deploy" button:
+![](./images/podmand-desktop-14.png)
 
+This will update the window with the status and you can click the "Done" button:
+![](./images/podmand-desktop-15.png)
 
+Back to the main window, let's go in the Pod section:
+![](./images/podmand-desktop-16.png)
 
 
