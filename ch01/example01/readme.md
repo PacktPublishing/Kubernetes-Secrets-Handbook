@@ -33,18 +33,24 @@ cd Kubernetes-Secret-Management-Handbook/ch01/example01/
 Have a look at the content:  
 ``` 
 ls -al
-total 16
-drwxr-xr-x@ 5 romdalf  staff  160 May  6 15:49 .
-drwxr-xr-x@ 3 romdalf  staff   96 May  4 12:08 ..
--rw-r--r--@ 1 romdalf  staff  582 May  4 12:33 Dockerfile
-drwxr-xr-x@ 3 romdalf  staff   96 May  4 12:33 hello
--rw-r--r--  1 romdalf  staff  819 May  6 15:57 readme.md
+```
+```
+total 64
+drwxr-xr-x@  8 romdalf  staff    256 May  7 19:44 .
+drwxr-xr-x@  3 romdalf  staff     96 May  4 12:08 ..
+-rw-r--r--@  1 romdalf  staff    582 May  4 12:33 Dockerfile
+drwxr-xr-x@  3 romdalf  staff     96 May  4 12:33 hello
+drwxr-xr-x  12 romdalf  staff    384 May  6 19:31 images
+-rw-r--r--   1 romdalf  staff    501 May  7 19:44 k8s-hello_world.yaml
+-rw-r--r--   1 romdalf  staff  12335 May  7 19:44 readme.md
 ```
 
-There is a 3 items:    
+There is a 5 items:    
 
 * Dockerfile; a build manifest to instruct Podman the steps to compil the Golang code into a binary and build the container image.
 * hello; a folder containing the ```main.go``` file containing the code of our "Hello World".
+* images; all the screenshot for this how-to file.
+* k8s-hello_world.yaml; the Kubernetes deployment file for our "Hello World" application.
 * readme.md; this how-to file.
 
 ## Build
@@ -211,4 +217,105 @@ The *Logs* tab will open a console showing our container logs. Open an Internet 
 **Congratulation! You just built and ran your first container application.** 
 
 ### Run "Hello World using Kubernetes
+
+Let's stop the "Hello World" container running with Podman. 
+
+![](./images/podmand-desktop-11.png)
+
+Then, we need to push our "Hello World" image from our local (read localhost) repository to the Kubernetes one. 
+
+Let's check what are the current images available within our Kind Kubernetes cluster:
+```
+podman exec -ti kind-cluster-control-plane crictl images 
+```
+
+A similar output should be shown and we can confirm that our ```localhost/hello-path``` image is not present:
+```
+IMAGE                                                     TAG                 IMAGE ID            SIZE
+docker.io/envoyproxy/envoy                                v1.25.2             8663724adc98f       51.7MB
+docker.io/kindest/kindnetd:v20230330-48f316cd             <none>              43ef1c5209cd9       25.3MB
+docker.io/kindest/local-path-helper:v20230330-48f316cd    <none>              e5f9a0a1ed364       2.92MB
+docker.io/kindest/local-path-provisioner:v0.0.23-kind.0   <none>              9eda906092e57       16.6MB
+ghcr.io/projectcontour/contour                            v1.24.2             a8894204792ae       13.4MB
+registry.k8s.io/coredns/coredns                           v1.9.3              b19406328e70d       13.4MB
+registry.k8s.io/etcd                                      3.5.6-0             ef24580282403       80.5MB
+registry.k8s.io/kube-apiserver                            v1.26.3             92e90fc362928       78MB
+registry.k8s.io/kube-controller-manager                   v1.26.3             96fd77e7825a4       66.7MB
+registry.k8s.io/kube-proxy                                v1.26.3             53df69d2174ba       63.4MB
+registry.k8s.io/kube-scheduler                            v1.26.3             9c689f0fff925       56.3MB
+registry.k8s.io/pause                                     3.7                 e5a475a038057       268kB
+```
+
+To push the image, we will be using the Kind command line as follow:
+```
+kind load docker-image hello-path:0.1 -n kind-cluster
+```
+
+A similar output should be shown:
+```
+Image: "hello-path:0.1" with ID "sha256:d2c3fbab3fd083db82653c801ff1c82e147b7fecca90a979c1f0a01a7e237290" not yet present on node "kind-cluster-control-plane", loading...
+``` 
+
+At this stage, we can run again the command to verify the list of available images:
+```
+podman exec -ti kind-cluster-control-plane crictl images 
+```
+
+A similar output should be shown with our ```localhost/hello-path``` image now present:
+```
+IMAGE                                                     TAG                 IMAGE ID            SIZE
+docker.io/envoyproxy/envoy                                v1.25.2             8663724adc98f       51.7MB
+docker.io/kindest/kindnetd:v20230330-48f316cd             <none>              43ef1c5209cd9       25.3MB
+registry.k8s.io/coredns/coredns                           v1.9.3              b19406328e70d       13.4MB
+docker.io/kindest/local-path-helper:v20230330-48f316cd    <none>              e5f9a0a1ed364       2.92MB
+docker.io/kindest/local-path-provisioner:v0.0.23-kind.0   <none>              9eda906092e57       16.6MB
+ghcr.io/projectcontour/contour                            v1.24.2             a8894204792ae       13.4MB
+localhost/hello-path                                      0.1                 d2c3fbab3fd08       36.8MB
+registry.k8s.io/etcd                                      3.5.6-0             ef24580282403       80.5MB
+registry.k8s.io/kube-apiserver                            v1.26.3             92e90fc362928       78MB
+registry.k8s.io/kube-controller-manager                   v1.26.3             96fd77e7825a4       66.7MB
+registry.k8s.io/kube-proxy                                v1.26.3             53df69d2174ba       63.4MB
+registry.k8s.io/kube-scheduler                            v1.26.3             9c689f0fff925       56.3MB
+registry.k8s.io/pause                                     3.7                 e5a475a038057       268kB
+```
+
+Let's go back into Podman Desktop and generate the deployment manifest. To do let's click on the "More" icon and select "Generate Kube":
+![](./images/podmand-desktop-12.png)
+
+This will open the following window with the deployment manifest for our "Hello World" container. As you can see, the major difference with running a container with Podman (or Docker) is that you have to provide a Pod object definition that will be sent to the ```kube-apiserver``` to process.  
+
+
+
+Let's have a copy/past of this output into a file that you will name ```k8s-hello_world.yaml```. The content should be similar to:
+
+```YAML
+# Save the output of this file and use kubectl create -f to import
+# it into Kubernetes.
+#
+# Created with podman-4.5.0
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    io.podman.annotations.ulimit: nofile=524288:524288,nproc=7252:7252
+  creationTimestamp: "2023-05-07T17:36:20Z"
+  labels:
+    app: laughingshtern-pod
+  name: laughingshtern-pod
+spec:
+  containers:
+  - image: localhost/hello-path:0.1
+    name: laughingshtern
+    ports:
+    - containerPort: 8080
+      hostPort: 8080
+    tty: true
+```
+
+Now, you can click on the "Deploy to Kubernetes" icon:
+![](./images/podmand-desktop-13.png)
+
+
+
+
 
