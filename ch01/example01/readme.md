@@ -1,7 +1,5 @@
-# Kubernetes Secret Management Handbook
-
-## Chapter 1 - Example 1
-### Overview and outcomes
+# Chapter 1 - Example 1
+## Overview and outcomes
 This example provides a walktrough to build the binary of our "Hello World" Golang flavor, run it using Podman Dekstop, then deploy the same application on Kubernetes. 
 
 The goals are too:
@@ -9,7 +7,7 @@ The goals are too:
 - perform the build and run on your local environment
 - deploy on Kubernetes and discover the differences with Podman (or Docker)
 
-### Get your environment ready
+## Get your environment ready
 First clone the git repository:  
 ```
 git clone https://github.com/PacktPublishing/Kubernetes-Secret-Management-Handbook.git 
@@ -21,7 +19,6 @@ ls -al
 total 16
 drwxr-xr-x   4 romdalf  staff   128 May  6 15:55 .
 drwxr-xr-x  12 romdalf  staff   384 May  6 15:55 ..
--rw-r--r--@  1 romdalf  staff  6148 May  6 15:07 .DS_Store
 drwxr-xr-x@  7 romdalf  staff   224 May  4 12:16 Kubernetes-Secret-Management-Handbook
 ```
 
@@ -41,16 +38,18 @@ drwxr-xr-x@  3 romdalf  staff     96 May  4 12:08 ..
 -rw-r--r--@  1 romdalf  staff    582 May  4 12:33 Dockerfile
 drwxr-xr-x@  3 romdalf  staff     96 May  4 12:33 hello
 drwxr-xr-x  12 romdalf  staff    384 May  6 19:31 images
+-rw-r--r--@  1 romdalf  staff    562 May  7 22:30 k8s-hello_world-ingress.yaml
 -rw-r--r--   1 romdalf  staff    501 May  7 19:44 k8s-hello_world.yaml
 -rw-r--r--   1 romdalf  staff  12335 May  7 19:44 readme.md
 ```
 
-There is a 5 items:    
+There are 5 items:    
 
 * Dockerfile; a build manifest to instruct Podman the steps to compil the Golang code into a binary and build the container image.
 * hello; a folder containing the ```main.go``` file containing the code of our "Hello World".
 * images; all the screenshot for this how-to file.
-* k8s-hello_world.yaml; the Kubernetes deployment file for our "Hello World" application.
+* k8s-hello_world-ingress.yaml; the Kubernetes Service file to access the "Hello World" application for the outside world. 
+* k8s-hello_world.yaml; the Kubernetes Pod deployment file for our "Hello World" application.
 * readme.md; this how-to file.
 
 ## Build
