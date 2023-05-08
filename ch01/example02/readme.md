@@ -3,7 +3,7 @@
 ## Overview and outcomes
 This example provide a walthrough to create a secret within Kubernetes and observe it's payload from an etcd key store perspective. 
 
-## Get your environment ready
+### Get your environment ready
 First clone the git repository:  
 ```
 git clone https://github.com/PacktPublishing/Kubernetes-Secret-Management-Handbook.git 
@@ -42,7 +42,7 @@ There are 2 items:
 * k8s-secret-example02.yaml; a second Secret file example.
 * k8s-secret.yaml; the Kubernetes Secret file to store our database credentials.
 
-## Create the Secret
+### Create the Secret
 Run the following command: 
 
 ```
@@ -98,7 +98,7 @@ Packt123!
 ```
 Now you have access to our database! 
 
-## Create our own secret
+### Create our own secret
 Let's create a second secret together. 
 
 First, we need to encode some key pairs:
@@ -130,7 +130,7 @@ kubectl create -f k8s-secret-example02.yaml
 secret/secret-example02 created
 ```
 
-## Get a view from etcd 
+### Get a view from etcd 
 The ```etcd``` key store is the ```kube-apiserver``` library and we can query it without going through the Kubernetes API but directly to ```etcd```.
 
 First, we need to recover the name of the ```etcd``` pod:
@@ -214,4 +214,6 @@ kubectl -n kube-system exec etcd-kind-cluster-control-plane -- sh -c "ETCDCTL_EN
 0000012d
 ```
 
-As you can see, the data is in clear text and accessible via both the standard API services from Kubernetes and ```etcd```. 
+## Conclusion
+As you can see, the data is in clear text and accessible via both the standard API services from Kubernetes and ```etcd```.
+ 
