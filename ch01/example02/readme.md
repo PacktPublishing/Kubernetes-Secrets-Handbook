@@ -1,4 +1,5 @@
 # Chapter 1 - Example 2
+
 ## Overview and outcomes
 This example provide a walthrough to create a secret within Kubernetes and observe it's payload from an etcd key store perspective. 
 
@@ -27,16 +28,18 @@ Have a look at the content:
 ls -al
 ```
 ```
-total 16
+total 32
 drwxr-xr-x@ 4 romdalf  staff  128 May  8 20:00 .
 drwxr-xr-x@ 4 romdalf  staff  128 May  8 19:39 ..
 -rw-r--r--  1 romdalf  staff  741 May  8 20:04 readme.md
+-rw-r--r--  1 romdalf  staff  126 May  8 20:20 k8s-secret-example02.yaml
 -rw-r--r--@ 1 romdalf  staff  131 May  8 19:40 k8s-secret.yaml
 ```
 
 There are 2 items:
 
 * readme.md; this how-to file.
+* k8s-secret-example02.yaml; a second Secret file example.
 * k8s-secret.yaml; the Kubernetes Secret file to store our database credentials.
 
 ## Create the Secret
@@ -211,3 +214,4 @@ kubectl -n kube-system exec etcd-kind-cluster-control-plane -- sh -c "ETCDCTL_EN
 0000012d
 ```
 
+As you can see, the data is in clear text and accessible via both the standard API services from Kubernetes and ```etcd```. 
