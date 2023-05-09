@@ -68,8 +68,8 @@ kubectl get secret/mysecret -o yaml
 ```YAML
 apiVersion: v1
 data:
-  password: UGFja3QxMjMhCg==
-  username: YWRtaW4K
+  password: UGFja3QxMjMh
+  username: YWRtaW4=
 kind: Secret
 metadata:
   creationTimestamp: "2023-05-08T18:08:50Z"
@@ -84,14 +84,14 @@ This above means that anyone who succeeds to have an access to the application p
 
 Let's decrypt the payload:
 ```
-echo YWRtaW4K | base64 -d
+echo -n YWRtaW4= | base64 -d
 ```
 ```
 admin
 ```
 
 ```
-echo UGFja3QxMjMhCg== | base64 -d
+echo -n UGFja3QxMjMh | base64 -d
 ```
 ```
 Packt123!
@@ -104,10 +104,10 @@ Let's create a second secret together.
 First, we need to encode some key pairs:
 
 ```
-echo mysUp3rDup3rTok3n | base64
+echo -n mysUp3rDup3rTok3n | base64
 ```
 ```
-bXlzVXAzckR1cDNyVG9rM24K
+bXlzVXAzckR1cDNyVG9rM24=
 ```
 
 Now we can create this new YAML file with the following content: 
@@ -119,7 +119,7 @@ metadata:
   name: secret-example02 
 type: Opaque 
 data: 
-  api-token: bXlzVXAzckR1cDNyVG9rM24K 
+  api-token: bXlzVXAzckR1cDNyVG9rM24= 
 ```
 
 And create the Secret object within Kubernetes:
