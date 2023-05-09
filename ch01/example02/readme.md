@@ -166,6 +166,27 @@ What is of interest for us is this part:
           name: secret-example02
           key: api-token
 ```
+This section requires to fetch the secret called ```secret-example02``` and the specific key ```api-token``` from this secret. Then the value of this key will be assigned to an environment variable called ```APITOKEN```. 
+
+This environment variable is then printed via the ```echo``` from the ```command``` definition in the container ```busybox```.
+
+Let's deploy this and see the results:
+```
+kubectl create -f k8s-busybox.yaml
+```
+```
+pod/busybox created
+```
+
+Check the container logs:
+```
+kubectl logs busybox
+```
+```
+my secret token is mysUp3rDup3rTok3n
+```
+
+Here it is, our API token! 
 
 ### Get a view from etcd 
 The ```etcd``` key store is the ```kube-apiserver``` library and we can query it without going through the Kubernetes API but directly to ```etcd```.
