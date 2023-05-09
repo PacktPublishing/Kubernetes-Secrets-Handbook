@@ -188,6 +188,7 @@ my secret token is mysUp3rDup3rTok3n
 
 Here it is, our API token! 
 
+## Secure or not?
 ### Get a view from etcd 
 The ```etcd``` key store is the ```kube-apiserver``` library and we can query it without going through the Kubernetes API but directly to ```etcd```.
 
