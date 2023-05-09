@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  restartPolicy: Never
+  containers:
+  - name: busybox
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command: ["ash","-c","echo my secret token is ${APITOKEN} && sleep 300"]
+    env:
+    - name: APITOKEN
+      valueFrom:
+        secretKeyRef:
+          name: secret-example02
+          key: api-token

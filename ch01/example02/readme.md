@@ -130,6 +130,43 @@ kubectl create -f k8s-secret-example02.yaml
 secret/secret-example02 created
 ```
 
+### Access my secret
+Now that we have create a secret for an API token, we need to access it from our ```Pod```. There are multiple ways to consume secrets that are either in Kubernetes or outside. Let's have a look one of the in-cluster approach using standard environment variables.
+
+To do so, we will be using what is called a ```busybox``` container which provide us with some basic Linux commands. Here is the YAML manifest:
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  restartPolicy: Never
+  containers:
+  - name: busybox
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command: ["ash","-c","echo my secret token is ${APITOKEN} && sleep 300"]
+    env:
+    - name: APITOKEN
+      valueFrom:
+        secretKeyRef:
+          name: secret-example02
+          key: api-token
+```
+
+What is of interest for us is this part:
+```YAML
+    env:
+    - name: APITOKEN
+      valueFrom:
+        secretKeyRef:
+          name: secret-example02
+          key: api-token
+```
+
 ### Get a view from etcd 
 The ```etcd``` key store is the ```kube-apiserver``` library and we can query it without going through the Kubernetes API but directly to ```etcd```.
 
