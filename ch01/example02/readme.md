@@ -152,28 +152,28 @@ Now that we have create a secret for an API token, we need to access it from our
 sequenceDiagram
 participant User or App
 participant etcd
-participant API Server
+participant kube-apiserver
 participant Pod
 participant Container
 participant Controller
 participant Kubelet
 participant Container runtime
 autonumber
-  User or App->>API Server: Create Pod
-  API Server->>etcd: Store Pod Specs
-  API Server->>Controller: Reconcile Desired State
-  Controller->>API Server: Current State different than Desired
-  API Server->>Scheduler: Create Pod
-  Scheduler->>API Server: Available Node
-  API Server->>etcd: Store Node Specs
-  API Server->>Kubelet: Bind Pod to Node
+  User or App->>kube-apiserver: Create Pod
+  kube-apiserver->>etcd: Store Pod Specs
+  kube-apiserver->>Controller: Reconcile Desired State
+  Controller->>kube-apiserver: Current State different than Desired
+  kube-apiserver->>Scheduler: Create Pod
+  Scheduler->>kube-apiserver: Available Node
+  kube-apiserver->>etcd: Store Node Specs
+  kube-apiserver->>Kubelet: Bind Pod to Node
   Kubelet->>Container runtime: Run Pod
-  Kubelet->>API Server: Get Secret
-  API Server->>Kubelet: Put Secret
+  Kubelet->>kube-apiserver: Get Secret
+  kube-apiserver->>Kubelet: Put Secret
   Container runtime->>Kubelet: Ok
-  Kubelet->>API Server: Pod Status
-  API Server->>etcd: Store Pod Status
-  API Server->>User or App: Pod Created
+  Kubelet->>kube-apiserver: Pod Status
+  kube-apiserver->>etcd: Store Pod Status
+  kube-apiserver->>User or App: Pod Created
 ```
 
 To do so, we will be using what is called a ```busybox``` container which provide us with some basic Linux commands. Here is the YAML manifest:
