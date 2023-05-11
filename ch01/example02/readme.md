@@ -43,6 +43,21 @@ There are 2 items:
 * k8s-secret.yaml; the Kubernetes Secret file to store our database credentials.
 
 ### Create the Secret
+Here is a workflow overview of the Secret object creation:
+
+```mermaid
+sequenceDiagram
+participant User or App
+participant etcd
+participant API Server
+autonumber
+  User or App->>API Server: create Secret
+  Note right of User or App: base64 encoded sensitive data
+  API Server->>etcd: store Secret
+  API Server->>User or App: Secret created
+```
+
+
 Run the following command: 
 
 ```
