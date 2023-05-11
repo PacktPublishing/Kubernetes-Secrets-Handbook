@@ -552,7 +552,39 @@ User requested the URL path: /packt
 
 ## Conclusion
 **Congratulation! You just built and ran your first container application.** 
- 
+
+Based on this Pod deployment example, and no matter the method used to deploy the Pod being a GUI or a CLI tool, the following workflow has been running:
+
+```mermaid
+sequenceDiagram
+participant User or App
+participant etcd
+participant kube-apiserver
+participant kube-scheduler
+participant Pod
+participant Container
+participant kube-controller-manager
+participant kubelet
+participant Container runtime
+autonumber
+  User or App->>kube-apiserver: Create Pod
+  kube-apiserver->>etcd: Store Pod Specs
+  kube-apiserver->>kube-controller-manager: Reconcile Desired State
+  kube-controller-manager->>kube-apiserver: Current State different than Desired
+  kube-apiserver->>kube-scheduler: Create Pod
+  kube-scheduler->>kube-apiserver: Available Node
+  kube-apiserver->>etcd: Store Node Specs
+  kube-apiserver->>kubelet: Bind Pod to Node
+  kubelet->>Container runtime: Run Pod
+  Container runtime->>kubelet: Ok
+  kubelet->>kube-apiserver: Pod Status
+  kube-apiserver->>etcd: Store Pod Status
+  kube-apiserver->>User or App: Pod Created
+```
+
+One of the most interesting type of components is the controller. Acting as a continuous reconciliation loop, the controller will evaluate the desired state recorded in the ```etcd``` with what has been deployed. 
+If there state is different, it will ensure to trigger the necessary changes to return to ***desired state == current state***.
+
 With this first example, we have:
 
 - built an application from its source and containerized it
