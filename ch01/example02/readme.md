@@ -273,6 +273,138 @@ kubectl -n kube-system exec etcd-kind-cluster-control-plane -- sh -c "ETCDCTL_EN
 0000012d
 ```
 
+### One step further
+While ```etcd``` provides a secure API service via TLS, the key store itself is not offering any encryption services. This, on top of accessing the records through the Kubernetes and etcd API, allows an access through the container filesystem. 
+
+First, recover the name of your Kind cluster running with Podman:
+```
+podman ps
+```
+```
+CONTAINER ID  IMAGE                                                                                           COMMAND     CREATED     STATUS      PORTS                                                                   NAMES
+f2b5d534f2d3  docker.io/kindest/node@sha256:61b92f38dff6ccc29969e7aa154d34e38b89443af1a2c14e6cfbd2df6419c66f              5 days ago  Up 5 days   0.0.0.0:9090->80/tcp, 0.0.0.0:9443->443/tcp, 127.0.0.1:59374->6443/tcp  kind-cluster-control-plane
+```
+
+Then recover the ```etcd``` YAML manifest by copying it out of the container filesystem from the folder ```/etc/kubernetes/manifests/etcd.yaml```: 
+```
+podman cp kind-cluster-control-plane:/etc/kubernetes/manifests/etcd.yaml kind-etcd.yaml
+```
+
+This created a copy of the manifest with the name ```kind-etcd.yaml```, in which you can now get the mount point ```/var/lib/etcd``` for the ```etcd``` db file:
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubeadm.kubernetes.io/etcd.advertise-client-urls: https://10.89.0.2:2379
+  creationTimestamp: null
+  labels:
+    component: etcd
+    tier: control-plane
+  name: etcd
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - etcd
+    - --advertise-client-urls=https://10.89.0.2:2379
+    - --cert-file=/etc/kubernetes/pki/etcd/server.crt
+    - --client-cert-auth=true
+    - --data-dir=/var/lib/etcd
+    - --experimental-initial-corrupt-check=true
+    - --experimental-watch-progress-notify-interval=5s
+    - --initial-advertise-peer-urls=https://10.89.0.2:2380
+    - --initial-cluster=kind-cluster-control-plane=https://10.89.0.2:2380
+    - --key-file=/etc/kubernetes/pki/etcd/server.key
+    - --listen-client-urls=https://127.0.0.1:2379,https://10.89.0.2:2379
+    - --listen-metrics-urls=http://127.0.0.1:2381
+    - --listen-peer-urls=https://10.89.0.2:2380
+    - --name=kind-cluster-control-plane
+    - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+    - --peer-client-cert-auth=true
+    - --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
+    - --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    - --snapshot-count=10000
+    - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    image: registry.k8s.io/etcd:3.5.6-0
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 127.0.0.1
+        path: /health?exclude=NOSPACE&serializable=true
+        port: 2381
+        scheme: HTTP
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
+    name: etcd
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+    startupProbe:
+      failureThreshold: 24
+      httpGet:
+        host: 127.0.0.1
+        path: /health?serializable=false
+        port: 2381
+        scheme: HTTP
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
+    volumeMounts:
+    - mountPath: /var/lib/etcd
+      name: etcd-data
+    - mountPath: /etc/kubernetes/pki/etcd
+      name: etcd-certs
+  hostNetwork: true
+  priorityClassName: system-node-critical
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/pki/etcd
+      type: DirectoryOrCreate
+    name: etcd-certs
+  - hostPath:
+      path: /var/lib/etcd
+      type: DirectoryOrCreate
+    name: etcd-data
+```
+
+Using the same process as for the YAML manifest, we can recover the ```etcd``` db file:
+```
+podman cp kind-cluster-control-plane:/var/lib/etcd/member/snap/db kind-db
+```
+
+Then you can use ```hexdump``` to read the file and search the ```api-token``` Secret object we created:
+```
+hexdump -C kind-db |grep 'api-token'
+``` 
+```h
+0006fe30  6c 65 30 32 12 09 61 70  69 2d 74 6f 6b 65 6e 42  |le02..api-tokenB|
+0008fe40  6c 65 30 32 12 09 61 70  69 2d 74 6f 6b 65 6e 42  |le02..api-tokenB|
+000c5e40  6c 65 30 32 12 09 61 70  69 2d 74 6f 6b 65 6e 42  |le02..api-tokenB|
+00141e40  6c 65 30 32 12 09 61 70  69 2d 74 6f 6b 65 6e 42  |le02..api-tokenB|
+002f6280  7b 7d 2c 22 66 3a 61 70  69 2d 74 6f 6b 65 6e 22  |{},"f:api-token"|
+002f62a0  7d 42 00 12 1f 0a 09 61  70 69 2d 74 6f 6b 65 6e  |}B.....api-token|
+```
+
+In our case, the offset ```002f6280``` seems to be the one with the most interest so, let's dig in with ```more```
+```hexdump -C kind-db |more```
+This should open the file in read mode, we can search the offset by typing ```/002f6280``` leading us to that specific line where you can retrieve the full content: 
+
+```h
+002f6280  7b 7d 2c 22 66 3a 61 70  69 2d 74 6f 6b 65 6e 22  |{},"f:api-token"|
+002f6290  3a 7b 7d 7d 2c 22 66 3a  74 79 70 65 22 3a 7b 7d  |:{}},"f:type":{}|
+002f62a0  7d 42 00 12 1f 0a 09 61  70 69 2d 74 6f 6b 65 6e  |}B.....api-token|
+002f62b0  12 12 6d 79 73 55 70 33  72 44 75 70 33 72 54 6f  |..mysUp3rDup3rTo|
+002f62c0  6b 33 6e 0a 1a 06 4f 70  61 71 75 65 1a 00 22 00  |k3n...Opaque..".|
+```
+
 ## Conclusion
-As you can see, the data is in clear text and accessible via both the standard API services from Kubernetes and ```etcd```.
+As you can see, the data is in clear text and accessible via both the standard API services from Kubernetes and ```etcd```, and a filesystem acces.
  
