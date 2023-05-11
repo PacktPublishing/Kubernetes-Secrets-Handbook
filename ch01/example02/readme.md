@@ -153,25 +153,26 @@ sequenceDiagram
 participant User or App
 participant etcd
 participant kube-apiserver
+participant kube-scheduler
 participant Pod
 participant Container
-participant Controller
-participant Kubelet
+participant kube-controller-manager
+participant kubelet
 participant Container runtime
 autonumber
   User or App->>kube-apiserver: Create Pod
   kube-apiserver->>etcd: Store Pod Specs
-  kube-apiserver->>Controller: Reconcile Desired State
-  Controller->>kube-apiserver: Current State different than Desired
-  kube-apiserver->>Scheduler: Create Pod
-  Scheduler->>kube-apiserver: Available Node
+  kube-apiserver->>kube-controller-manager: Reconcile Desired State
+  kube-controller-manager->>kube-apiserver: Current State different than Desired
+  kube-apiserver->>kube-scheduler: Create Pod
+  kube-scheduler->>kube-apiserver: Available Node
   kube-apiserver->>etcd: Store Node Specs
-  kube-apiserver->>Kubelet: Bind Pod to Node
-  Kubelet->>Container runtime: Run Pod
-  Kubelet->>kube-apiserver: Get Secret
-  kube-apiserver->>Kubelet: Put Secret
-  Container runtime->>Kubelet: Ok
-  Kubelet->>kube-apiserver: Pod Status
+  kube-apiserver->>kubelet: Bind Pod to Node
+  kubelet->>Container runtime: Run Pod
+  kubelet->>kube-apiserver: Get Secret
+  kube-apiserver->>kubelet: Put Secret
+  Container runtime->>kubelet: Ok
+  kubelet->>kube-apiserver: Pod Status
   kube-apiserver->>etcd: Store Pod Status
   kube-apiserver->>User or App: Pod Created
 ```
