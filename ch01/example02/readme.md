@@ -52,7 +52,7 @@ participant etcd
 participant API Server
 autonumber
   User or App->>API Server: create Secret
-  Note right of User or App: base64 encoded sensitive data
+  Note right of User or App: base64 encoded data
   API Server->>etcd: store Secret
   API Server->>User or App: Secret created
 ```
@@ -147,6 +147,33 @@ secret/secret-example02 created
 
 ### Access my secret
 Now that we have create a secret for an API token, we need to access it from our ```Pod```. There are multiple ways to consume secrets that are either in Kubernetes or outside. Let's have a look one of the in-cluster approach using standard environment variables.
+
+```mermaid
+sequenceDiagram
+participant User or App
+participant etcd
+participant API Server
+participant Pod
+participant Container
+participant Controller
+participant Kubelet
+participant Container runtime
+autonumber
+  User or App->>API Server: create Pod
+  API Server->>etcd: store Pod definition
+  API Server->>Controller: reconcile desired state
+  Controller->>API Server: not met
+  API Server->>Scheduler: Create Pod
+  Scheduler->>API Server: Here is where
+  API Server->>Kubelet: Bind Pod to node
+  Kubelet->>Container runtime: Run Pod
+  Kubelet->>API Server: Secret data
+  API Server->>Kubelet: data
+  Container runtime->>Kubelet: Ok
+  Kubelet->>API Server: Pod status
+  API Server->>etcd: store Pod status
+  API Server-> User or App: Pod created
+```
 
 To do so, we will be using what is called a ```busybox``` container which provide us with some basic Linux commands. Here is the YAML manifest:
 
