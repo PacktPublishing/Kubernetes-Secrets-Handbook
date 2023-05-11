@@ -146,7 +146,7 @@ secret/secret-example02 created
 ```
 
 ### Access my secret
-Now that we have create a secret for an API token, we need to access it from our ```Pod```. There are multiple ways to consume secrets that are either in Kubernetes or outside. Let's have a look one of the in-cluster approach using standard environment variables.
+Now that we have create a secret for an API token, we need to access it from our ```Pod```. There are multiple ways to consume secrets that are either in Kubernetes or outside. Let's update our previous workflow to include the Secret part.
 
 ```mermaid
 sequenceDiagram
