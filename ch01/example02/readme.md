@@ -161,19 +161,19 @@ participant Container runtime
 autonumber
   User or App->>API Server: Create Pod
   API Server->>etcd: Store Pod Specs
-  API Server->>Controller: Reconcile desired state
-  Controller->>API Server: Current state different than desired
+  API Server->>Controller: Reconcile Desired State
+  Controller->>API Server: Current State different than Desired
   API Server->>Scheduler: Create Pod
   Scheduler->>API Server: Available Node
-  API Server->>etcd: store Node Specs
+  API Server->>etcd: Store Node Specs
   API Server->>Kubelet: Bind Pod to Node
   Kubelet->>Container runtime: Run Pod
   Kubelet->>API Server: Get Secret
   API Server->>Kubelet: Put Secret
   Container runtime->>Kubelet: Ok
   Kubelet->>API Server: Pod Status
-  API Server->>etcd: store Pod Status
-  API Server-> User or App: Pod Created
+  API Server->>etcd: Store Pod Status
+  API Server->>User or App: Pod Created
 ```
 
 To do so, we will be using what is called a ```busybox``` container which provide us with some basic Linux commands. Here is the YAML manifest:
