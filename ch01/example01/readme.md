@@ -558,14 +558,17 @@ Based on this Pod deployment example, and no matter the method used to deploy th
 ```mermaid
 sequenceDiagram
 participant User or App
+box Control Plane
 participant etcd
 participant kube-apiserver
 participant kube-scheduler
-participant Container
 participant kube-controller-manager
+end
+box Node
 participant kubelet
 participant Container runtime
 participant Pod
+end
 autonumber
   User or App->>kube-apiserver: Create Pod
   kube-apiserver->>etcd: Store Pod Specs
