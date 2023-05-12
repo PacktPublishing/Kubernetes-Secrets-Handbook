@@ -561,8 +561,8 @@ participant User or App
 box Control Plane
 participant etcd
 participant kube-apiserver
-participant kube-scheduler
 participant kube-controller-manager
+participant kube-scheduler
 end
 box Node
 participant kubelet
