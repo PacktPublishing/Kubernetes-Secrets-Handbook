@@ -561,11 +561,11 @@ participant User or App
 participant etcd
 participant kube-apiserver
 participant kube-scheduler
-participant Pod
 participant Container
 participant kube-controller-manager
 participant kubelet
 participant Container runtime
+participant Pod
 autonumber
   User or App->>kube-apiserver: Create Pod
   kube-apiserver->>etcd: Store Pod Specs
