@@ -576,7 +576,7 @@ autonumber
   kube-apiserver->>etcd: Store Node Specs
   kube-apiserver->>kubelet: Bind Pod to Node
   kubelet->>Container runtime: Run Pod
-  Container runtime->>Create Pod
+  Container runtime->>Pod
   Container runtime->>kubelet: Ok
   kubelet->>kube-apiserver: Pod Status
   kube-apiserver->>etcd: Store Pod Status
