@@ -1,3 +1,5 @@
+#!/bin/bash
+
 kubectl create secret generic opaque-example-from-literals --from-literal=literal1=text-for-literal-1
 
 kubectl get secret opaque-example-from-literals -o yaml
