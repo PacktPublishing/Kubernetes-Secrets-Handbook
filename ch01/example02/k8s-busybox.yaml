@@ -10,10 +10,15 @@ spec:
   - name: busybox
     image: busybox
     imagePullPolicy: IfNotPresent
-    command: ["ash","-c","echo my secret token is ${APITOKEN} && sleep 300"]
+    command: ["ash","-c","echo running ${APPVERSION} version and the secret token is ${APITOKEN} && sleep 300"]
     env:
     - name: APITOKEN
       valueFrom:
         secretKeyRef:
           name: secret-example02
           key: api-token
+    - name: APPVERSION
+      valueFrom:
+        configMapKeyRef:
+          name: app-environment
+          key: appversion

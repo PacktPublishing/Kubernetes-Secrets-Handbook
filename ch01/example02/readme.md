@@ -28,12 +28,14 @@ Have a look at the content:
 ls -al
 ```
 ```
-total 32
-drwxr-xr-x@ 4 romdalf  staff  128 May  8 20:00 .
-drwxr-xr-x@ 4 romdalf  staff  128 May  8 19:39 ..
--rw-r--r--  1 romdalf  staff  741 May  8 20:04 readme.md
--rw-r--r--  1 romdalf  staff  126 May  8 20:20 k8s-secret-example02.yaml
--rw-r--r--@ 1 romdalf  staff  131 May  8 19:40 k8s-secret.yaml
+total 64
+drwxr-xr-x@ 7 romdalf  staff    224 May 13 10:42 .
+drwxr-xr-x@ 4 romdalf  staff    128 May  8 19:39 ..
+-rw-r--r--  1 romdalf  staff    395 May  9 13:55 k8s-busybox.yaml
+-rw-r--r--  1 romdalf  staff    133 May 13 10:43 k8s-configmap.yaml
+-rw-r--r--  1 romdalf  staff    126 May  9 13:35 k8s-secret-example02.yaml
+-rw-r--r--@ 1 romdalf  staff    127 May 11 21:53 k8s-secret.yaml
+-rw-r--r--  1 romdalf  staff  15522 May 13 10:45 readme.md
 ```
 
 There are 2 items:
@@ -58,7 +60,6 @@ autonumber
   API Server->>etcd: store Secret
   API Server->>User or App: Secret created
 ```
-
 
 Run the following command: 
 
@@ -145,9 +146,60 @@ kubectl create -f k8s-secret-example02.yaml
 ```
 ```
 secret/secret-example02 created
+``` 
+
+### Create a ConfigMap
+The following ```ConfigMap``` is provided:
+```YAML
+apiVersion: v1 
+kind: ConfigMap 
+metadata: 
+  name: app-environment 
+data: 
+  appversion: “dev" 
 ```
 
-### Access my secret
+The main difference with our ```Secret``` object. The ```ConfigMap``` data field expects UTF-8 strings while a ```Secret``` object expect base64 encoded strings.
+Note that there is a ```binaryData``` field for the ```ConfigMap``` object allowing you to present a file that will be mounted within the container. 
+
+Run the create command:
+```
+kubectl create -f ch01/example02/k8s-configmap.yaml
+```
+```
+configmap/app-environment created
+```
+
+Let's inspect the newly create object:
+```
+kubectl get configmap/app-environment
+```
+```
+NAME              DATA   AGE
+app-environment   2      6m33s
+```
+
+Can we get the key pair values back?
+```
+kubectl get configmap/app-environment -o yaml
+```
+```YAML
+apiVersion: v1
+data:
+  appversion: dev
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-05-13T09:40:23Z"
+  name: app-environment
+  namespace: default
+  resourceVersion: "338962"
+  uid: f004f55e-a761-4f97-a3f4-ad7fd3fccd6f
+```
+
+Like with ```Secret``` objects, anyone with enough privileges can retrieve the sensitive data in your ```ConfigMap```.
+
+
+### Access my Secret and ConfigMap
 Now that we have create a secret for an API token, we need to access it from our ```Pod```. There are multiple ways to consume secrets that are either in Kubernetes or outside. Let's update our previous workflow to include the Secret part.
 
 ```mermaid
@@ -197,13 +249,18 @@ spec:
   - name: busybox
     image: busybox
     imagePullPolicy: IfNotPresent
-    command: ["ash","-c","echo my secret token is ${APITOKEN} && sleep 300"]
+    command: ["ash","-c","echo running ${APPVERSION} version and the secret token is ${APITOKEN} && sleep 300"]
     env:
     - name: APITOKEN
       valueFrom:
         secretKeyRef:
           name: secret-example02
           key: api-token
+    - name: APPVERSION
+      valueFrom:
+        configMapKeyRef:
+          name: app-environment
+          key: appversion
 ```
 
 What is of interest for us is this part:
@@ -217,6 +274,15 @@ What is of interest for us is this part:
 ```
 This section requires to fetch the secret called ```secret-example02``` and the specific key ```api-token``` from this secret. Then the value of this key will be assigned to an environment variable called ```APITOKEN```. 
 
+Same goes for our ```ConfigMap``` with the below section of the manifest loading an environment variable called ```APPVERSION```: 
+```YAML
+    - name: APPVERSION
+      valueFrom:
+        configMapKeyRef:
+          name: app-environment
+          key: appversion
+```
+
 This environment variable is then printed via the ```echo``` from the ```command``` definition in the container ```busybox```.
 
 Let's deploy this and see the results:
@@ -226,16 +292,17 @@ kubectl create -f k8s-busybox.yaml
 ```
 pod/busybox created
 ```
+Make sure that you have created the ```ConfigMap``` object in the previous seciont or the ```Pod``` creation will fail. 
 
 Check the container logs:
 ```
 kubectl logs busybox
 ```
 ```
-my secret token is mysUp3rDup3rTok3n
+running dev version and the secret token is mysUp3rDup3rTok3n
 ```
 
-Here it is, our API token! 
+Here it is, our app-environment info and API token! 
 
 ## Secure or not?
 ### Get a view from etcd 
