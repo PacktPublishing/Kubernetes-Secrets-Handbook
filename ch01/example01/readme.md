@@ -2,10 +2,11 @@
 ## Overview and outcomes
 This example provides a walktrough to build the binary of our "Hello World" Golang flavor, run it using Podman Dekstop, then deploy the same application on Kubernetes. 
 
-The goals are too:
-- refresh knowledge about building a container image
-- perform the build and run on your local environment
-- deploy on Kubernetes and discover the differences with Podman (or Docker)
+The goals are to:
+
+* Refresh knowledge about building a container image.
+* Perform the build and run on your local environment.
+* Deploy on Kubernetes and discover the differences with Podman (or Docker).
 
 ## Get your environment ready
 First clone the git repository:  
@@ -56,9 +57,9 @@ There are 5 items:
 ### The Golang code
 The "Hello World" code perform the followings:
 
-* start a webserver on port 8080
-* print in the browser the message "Hello from path: *URL path*"
-* print at the console the message "User request the URL path: *URL path*" 
+* Start a webserver on port 8080.
+* Print in the browser the message "Hello from path: *URL path*".
+* Print at the console the message "User request the URL path: *URL path*".
 
 ```Go
 package main
@@ -101,11 +102,11 @@ func main() {
 ### The Dockerfile
 The Dockerfile perform the followings:
 
-* fetch the Red Hat Universal Base Image with the Golang Toolset as a build image only
-* copy the "Hello World" code and build a binary
-* fetch the micro Red Hat Universal Base Image and copy the binary in it
-* Reference a port exposure, here port 8080
-* Reference the binary as an entrypoint
+* Fetch the Red Hat Universal Base Image with the Golang Toolset as a build image only.
+* Copy the "Hello World" code and build a binary.
+* Fetch the micro Red Hat Universal Base Image and copy the binary in it.
+* Reference a port exposure, here port 8080.
+* Reference the binary as an entrypoint.
 
 ```Docker
 FROM registry.access.redhat.com/ubi8/go-toolset@sha256:168ac23af41e6c5a6fc75490ea2ff9ffde59702c6ee15d8c005b3e3a3634fcc2 AS build
@@ -591,7 +592,7 @@ If there state is different, it will ensure to trigger the necessary changes to 
 
 With this first example, we have:
 
-- built an application from its source and containerized it
-- successfully ran and accessed it with Podman Desktop
-- discover the object definition for a Pod and Service and used them to deployed and accessed the application running on Kubernetes
+* Built an application from its source and containerized it.
+* Successfully ran and accessed it with Podman Desktop.
+* Discover the object definition for a Pod and Service and used them to deployed and accessed the application running on Kubernetes.
 
