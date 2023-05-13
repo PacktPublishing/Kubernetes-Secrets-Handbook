@@ -48,8 +48,10 @@ Here is a workflow overview of the Secret object creation:
 ```mermaid
 sequenceDiagram
 participant User or App
+box Control Plane
 participant etcd
 participant API Server
+end
 autonumber
   User or App->>API Server: create Secret
   Note right of User or App: base64 encoded data
@@ -151,14 +153,17 @@ Now that we have create a secret for an API token, we need to access it from our
 ```mermaid
 sequenceDiagram
 participant User or App
+box Control Plane
 participant etcd
 participant kube-apiserver
-participant kube-scheduler
-participant Pod
-participant Container
 participant kube-controller-manager
+participant kube-scheduler
+end
+box Node
 participant kubelet
 participant Container runtime
+participant Pod
+end
 autonumber
   User or App->>kube-apiserver: Create Pod
   kube-apiserver->>etcd: Store Pod Specs
