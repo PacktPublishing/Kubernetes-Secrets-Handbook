@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: plain-text
+type: Opaque
+stringData:
+  value: non-base64
