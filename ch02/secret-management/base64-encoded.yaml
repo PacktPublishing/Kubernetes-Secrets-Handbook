@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: base64-encoded
+type: Opaque
+data:
+  value: bm9uLWJhc2U2NA==
