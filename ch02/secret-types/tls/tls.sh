@@ -18,3 +18,5 @@ KEY=$(cat server.key|base64)
 cat tls-secret-template.yaml|sed "s/CRT/$CRT/" |sed "s/KEY/$KEY/" > tls-secret.yaml
 
 kubectl apply -f ./tls-secret.yaml
+
+kubectl apply -f ./ingress.yaml
