@@ -1,18 +1,18 @@
 # Key Value Data
 
 ## Setup the environment 
-With Podman Desktop, we will create a specific cluster to illustrate the kube-apiserver KMS provider examples. 
+With Podman Desktop, we will create a specific cluster to illustrate the kube-apiserver KMS provider examples:
 
-
+Get to the Settings and to access the ```kind``` resource and click ```Create new...```
 ![](./images/kind-01.png)
 
+Give the cluster the name ```kind-ch03```and click ```Create```
 ![](./images/kind-02.png)
 
+Once done, make sure the newly ```kind``` cluster is started:
 ![](./images/kind-03.png)
 
-
 Then moving your Terminal, we can have a look at the cluster from there:
-
 ```bash
 podman ps -a
 CONTAINER ID  IMAGE                                                                                           COMMAND     CREATED        STATUS        PORTS                                                                   NAMES
