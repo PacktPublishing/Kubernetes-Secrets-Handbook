@@ -4,5 +4,9 @@ resources:
   - resources:
       - secrets
     providers:
+      - aesgcm:
+          keys:
+            - name: key1
+              secret: sfzsUFbNX5NOyPzDrRGvsRcBagO/0h5ifxTMKX5wfDE=
       - identity: {}
 

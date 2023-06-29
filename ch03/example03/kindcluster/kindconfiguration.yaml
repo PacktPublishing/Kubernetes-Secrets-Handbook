@@ -1,0 +1,21 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: kind-ch03
+nodes:
+- role: control-plane
+  extraMounts:
+    - hostPath: encryption
+      containerPath: /etc/kubernetes/encryption
+  kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    apiServer:
+      extraArgs:
+        encryption-provider-config: "/etc/kubernetes/encryption/configuration.yaml"
+        encryption-provider-config-automatic-reload: "true"
+      extraVolumes:
+        - name: "encryption"
+          hostPath: /etc/kubernetes/encryption/configuration.yaml
+          mountPath: /etc/kubernetes/encryption/configuration.yaml
+          readOnly: false
+          pathType: File
