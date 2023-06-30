@@ -41,8 +41,3 @@ brew install kubernetes-cli
 brew install podman
 brew install podman-desktop
 ```
-
-Here is an expected similar output for the installation of ```podman-desktop```:
-```
-
-```

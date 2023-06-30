@@ -393,3 +393,9 @@ Now, our previously created Secret has been replaced with an encrypted version u
 NOTES:
 - Inversing the two providers and replacing the Secret will result in an unencrypted revision stored in etcd.
 - All Secret objects can be replaced with the following command ```kubectl get secrets --all-namespaces -o json | kubectl replace -f -```
+
+## KMS Provider Plugin
+This provider is leveraging an external KMS like HashiCorp Vault via a plugin, either offered by the vault vendor, the Kubernetes distribution, or by the community. 
+
+In this case, we will be using [trousseau.io](https://trousseau.io) that is a community project and agnostic of any vendor. Troussau is using a modular approach helping with integrating new KMS on top of the currently supported ones being HashiCorp Vault (Community and Enterprise), Azure Key Vault, and AWS Vault. 
+
