@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aes-key
+type: Opaque
+data:
+  key: KEY_PLACEHOLDER
