@@ -21,6 +21,8 @@ cat temporary_base_64_example_key.yaml
 
 kubectl apply -f ./temporary_base_64_example_key.yaml
 
+rm ./temporary_base_64_example_key.yaml
+
 kubectl apply -f ./base_64_example.yaml
 
 kubectl wait --for=condition=ready pod/print-env-pod 
