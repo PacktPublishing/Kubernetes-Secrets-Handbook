@@ -10,7 +10,7 @@ variable "eks_version" {
 
 variable "cluster_name" {
   type = string
-  default = "kubernetes-secrets-eks-cluster"
+  default = "eks-ksm-cluster"
 }
 
 variable "availability_zones" {
