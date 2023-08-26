@@ -6,7 +6,8 @@ spec:
   containers:
     - name: print-env-pod
       image: busybox
-      command: ["sh", "-c", "env"]
+      command: ["/bin/sh","-c"]
+      args: ["echo $key|md5sum"]
       envFrom:
         - secretRef:
             name:  aes-key

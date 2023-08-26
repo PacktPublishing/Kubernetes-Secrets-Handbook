@@ -4,4 +4,4 @@ metadata:
   name: aes-key
 type: Opaque
 data:
-  key: KEY_PLACEHOLDER
+  key: b401076d30ca42809f8d416e22fb3084e1cc4b7947cafb17b000e8a46b1483c8
