@@ -23,6 +23,8 @@ resource "aws_iam_policy" "ksm_service_token_reader" {
   
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_role" "eks_secret_reader_role" {
   name = "eks-secret-reader"
 
@@ -31,13 +33,21 @@ resource "aws_iam_role" "eks_secret_reader_role" {
     Statement = [
       {
         Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
+        "Principal": {
+          "Federated": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.ksm_eks.oidc_provider}"
+        }
+        "Action": "sts:AssumeRoleWithWebIdentity",
+        "Condition": {
+          "StringEquals": {
+            "${module.ksm_eks.oidc_provider}:aud": "sts.amazonaws.com",
+            "${module.ksm_eks.oidc_provider}:sub": "system:serviceaccount:default:service-token-reader"
+        }
+      }
       }
     ]
   })
+
+
 }
 
 resource "aws_iam_role_policy_attachment" "esrrs" {

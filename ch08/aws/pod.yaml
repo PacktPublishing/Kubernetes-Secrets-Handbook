@@ -1,0 +1,20 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx
+spec:
+  serviceAccountName: service-token-reader
+  containers:
+  - image: nginx
+    name: nginx
+    volumeMounts:
+    - name: secret-from-asm
+      mountPath: "/mnt/secrets-store"
+      readOnly: true
+  volumes:
+    - name: secret-from-asm
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "service-token"
