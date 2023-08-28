@@ -1,6 +1,8 @@
 resource "aws_secretsmanager_secret" "ksm_service_token" {
-  name        = "service_token"
-  recovery_window_in_days = 0
+  name        = "service_token-nanan"
+  replica {
+    region = "eu-central-1"
+  }
 }
 
 resource "aws_secretsmanager_secret_version" "ksm_service_token_first_version" {
