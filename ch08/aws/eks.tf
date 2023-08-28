@@ -9,11 +9,11 @@ module "ksm_eks" {
   subnet_ids                     = module.ksm_vpc.private_subnets
   cluster_endpoint_public_access = true
 
-  create_kms_key = false
-  cluster_encryption_config = {
-    resources = ["secrets"]
-    provider_key_arn = aws_kms_key.ksm_kms_key.arn
-  }
+#   create_kms_key = false
+#   cluster_encryption_config = {
+#     resources = ["secrets"]
+#     provider_key_arn = aws_kms_key.ksm_kms_key.arn
+#   }
 
 
   eks_managed_node_group_defaults = {
