@@ -1,0 +1,20 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx
+spec:
+  serviceAccountName: service-token-reader
+  containers:
+    - name: nginx 
+      image: nginx
+      volumeMounts:
+      - name: keyvault-secrets
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
+  volumes:
+    - name: keyvault-secrets
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "keyvault-secrets"
