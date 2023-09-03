@@ -57,8 +57,8 @@ resource "azurerm_linux_virtual_machine" "bastion_vm" {
   location                        = var.location
   resource_group_name             = azurerm_resource_group.ksm_resource_group.name
   size                            = "Standard_A1_v2"
-  admin_username                  = "ainti-barbie"
-  admin_password                  = "Pami-party1!*"
+  admin_username                  = "test-username"
+  admin_password                  = "add-strong-password"
   disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.bastion_network_interface.id,
