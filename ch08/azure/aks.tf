@@ -9,6 +9,11 @@ resource "azurerm_kubernetes_cluster" "ksm_aks" {
   workload_identity_enabled = true
 
   role_based_access_control_enabled = true
+
+  key_management_service {
+    key_vault_key_id = azurerm_key_vault_key.ksm_encryption_key.id
+    key_vault_network_access = "Public"
+  }
   
   network_profile {
     network_plugin     = "kubenet"
@@ -23,7 +28,8 @@ resource "azurerm_kubernetes_cluster" "ksm_aks" {
 
 
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.ksm_aks_identiy.id]
   }
 
 
