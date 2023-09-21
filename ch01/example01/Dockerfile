@@ -7,7 +7,7 @@ RUN go build .
 
 FROM registry.access.redhat.com/ubi8/ubi-micro@sha256:6a56010de933f172b195a1a575855d37b70a4968be8edb35157f6ca193969ad2
 LABEL org.opencontainers.image.title "Hello from Path"
-LABEL org.opencontainers.inage.description "Kubernetes Secret Management Handbook - Chapter 01 - Containter Build Example"
+LABEL org.opencontainers.inage.description "Kubernetes Secret Management Handbook - Chapter 01 - Container Build Example"
 
 COPY --from=build ./opt/app-root/src/hello .
 
