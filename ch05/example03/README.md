@@ -69,7 +69,7 @@ then restart your API server or start the provisioning of your Kind cluster with
 ```yaml
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
-name: kind-ch03
+name: kind-ch05
 nodes:
 - role: control-plane
   extraMounts:
@@ -94,8 +94,76 @@ kind create cluster --config kindconfiguration.yaml
 ```
 resulting with:
 ```
+Creating cluster "kind-ch05" ...
+ ✓ Ensuring node image (kindest/node:v1.27.3) 🖼 
+ ✓ Preparing nodes 📦  
+ ✓ Writing configuration 📜 
+ ✓ Starting control-plane 🕹️ 
+ ✓ Installing CNI 🔌 
+ ✓ Installing StorageClass 💾 
+Set kubectl context to "kind-kind-ch05"
+You can now use your cluster with:
 
+kubectl cluster-info --context kind-kind-ch05
+
+Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
 ```
+then check that the API server has the flag set correctly:
+```
+kubectl describe -n kube-system pod/kube-apiserver-kind-ch05-control-plane
+```
+resulting with:
+```
+...
+Containers:
+  kube-apiserver:
+    Container ID:  containerd://b9bc3554f6358b961bedc6375381850502726a67adc9fd20abddcc051ccbaa58
+    Image:         registry.k8s.io/kube-apiserver:v1.27.3
+    Image ID:      docker.io/library/import-2023-06-15@sha256:0202953c0b15043ca535e81d97f7062240ae66ea044b24378370d6e577782762
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      kube-apiserver
+      --advertise-address=10.89.0.2
+      --allow-privileged=true
+      --audit-policy-file=/etc/kubernetes/audit/audit-secret.yaml
+      --authorization-mode=Node,RBAC
+      --client-ca-file=/etc/kubernetes/pki/ca.crt
+      --enable-admission-plugins=NodeRestriction
+      --enable-bootstrap-token-auth=true
+      --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt
+      --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt
+      --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key
+      --etcd-servers=https://127.0.0.1:2379
+      --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt
+      --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key
+      --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+      --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt
+      --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key
+      --requestheader-allowed-names=front-proxy-client
+      --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt
+      --requestheader-extra-headers-prefix=X-Remote-Extra-
+      --requestheader-group-headers=X-Remote-Group
+      --requestheader-username-headers=X-Remote-User
+      --runtime-config=
+      --secure-port=6443
+      --service-account-issuer=https://kubernetes.default.svc.cluster.local
+      --service-account-key-file=/etc/kubernetes/pki/sa.pub
+      --service-account-signing-key-file=/etc/kubernetes/pki/sa.key
+      --service-cluster-ip-range=10.96.0.0/16
+      --tls-cert-file=/etc/kubernetes/pki/apiserver.crt
+      --tls-private-key-file=/etc/kubernetes/pki/apiserver.key
+    State:          Running
+      Started:      Sun, 15 Oct 2023 22:13:10 +0200
+...
+Volumes:
+  audit:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/kubernetes/audit/audit-secret.yaml
+    HostPathType:  File
+...
+```
+
 
 ## Conclusion
 **Congratulation! You just enhanced your Kubernetes cluster with auditing capability.
