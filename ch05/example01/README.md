@@ -1,4 +1,4 @@
-# Chapter 5 - Example 2
+# Chapter 5 - Example 1
 ## Overview and outcomes
 This example provides a walkthrough to run the compliance operator to assess the current security posture of a OpenShift cluster. 
 
