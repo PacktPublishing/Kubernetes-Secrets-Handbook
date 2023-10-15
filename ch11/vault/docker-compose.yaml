@@ -9,4 +9,4 @@ services:
       VAULT_DEV_ROOT_TOKEN_ID: mytoken
       VAULT_LOG_LEVEL: debug
     volumes:
-      - haproxy.cfg:/haproxy.cfg
+      - ./haproxy.cfg:/haproxy.cfg
