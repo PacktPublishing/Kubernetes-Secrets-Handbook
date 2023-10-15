@@ -35,6 +35,13 @@ We will be using a standard Kind cluster deployed via Podman Desktop on a MacBoo
 ### Installation
 Follow the below screenshot to install the compliance operator on OpenShift
 
+![](./images/ch05-example02-compliance_operator-01.png)
+![](./images/ch05-example02-compliance_operator-02.png)
+![](./images/ch05-example02-compliance_operator-03.png)
+![](./images/ch05-example02-compliance_operator-04.png)
+![](./images/ch05-example02-compliance_operator-05.png)
+![](./images/ch05-example02-compliance_operator-06.png)
+
 
 ### Running a scan
 The following command provides with an overview of the current scan settings which we will not change at the moment:
@@ -270,6 +277,10 @@ oscap-report < ocp4-cis-api-checks-pod.xml.bzip2.out > ocp4-cis-api-checks-pod.h
 oscap-report < ocp4-cis-node-master-crc-lz7xw-master-0-pod.xml.bzip2.out > ocp4-cis-node-master-crc-lz7xw-master-0-pod.html
 oscap-report < ocp4-cis-node-worker-crc-lz7xw-master-0-pod.xml.bzip2.out > ocp4-cis-node-worker-crc-lz7xw-master-0-pod.html
 ```
+Here is a screenshot of the report being generated with the tool:
+![](./images/ch05-example02-compliance_operator-07.png)
+![](./images/ch05-example02-compliance_operator-08.png)
+
 
 All these files are available in this directory for you to review.
 
