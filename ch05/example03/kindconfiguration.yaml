@@ -1,0 +1,20 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: kind-ch03
+nodes:
+- role: control-plane
+  extraMounts:
+    - hostPath: audit
+      containerPath: /etc/kubernetes/audit
+  kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    apiServer:
+      extraArgs:
+        audit-policy-file: "/etc/kubernetes/audit/audit-secret.yaml"
+      extraVolumes:
+        - name: "audit"
+          hostPath: /etc/kubernetes/audit/audit-secret.yaml
+          mountPath: /etc/kubernetes/audit/audit-secret.yaml
+          readOnly: false
+          pathType: File
