@@ -6,22 +6,21 @@ nodes:
   extraMounts:
     - hostPath: audit
       containerPath: /etc/kubernetes/audit
-    - hostPath: audit-log
-      containerPath: /var/log/kubernetes/audit/
   kubeadmConfigPatches:
   - |
     kind: ClusterConfiguration
     apiServer:
       extraArgs:
         audit-policy-file: "/etc/kubernetes/audit/audit-secret.yaml"
-        audit-log-path: "/var/log/kubernetes/audit/audit.log"
+        audit-log-path: "/var/log/kubernetes/kube-api-audit.log"
       extraVolumes:
         - name: "audit"
           hostPath: /etc/kubernetes/audit/audit-secret.yaml
           mountPath: /etc/kubernetes/audit/audit-secret.yaml
-          readOnly: false
+          readOnly: true
           pathType: File
         - name: "audit-log"
-          hostPath: /var/log/kubernetes/audit/
+          hostPath: /var/log/kubernetes/
+          mountPath: /var/log/kubernetes/
           readOnly: false
           pathType: DirectoryOrCreate
