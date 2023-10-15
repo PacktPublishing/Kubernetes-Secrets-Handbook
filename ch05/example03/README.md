@@ -81,12 +81,18 @@ nodes:
     apiServer:
       extraArgs:
         audit-policy-file: "/etc/kubernetes/audit/audit-secret.yaml"
+        audit-log-path: "/var/log/kubernetes/kube-api-audit.log"
       extraVolumes:
-        - name: "encryption"
+        - name: "audit"
           hostPath: /etc/kubernetes/audit/audit-secret.yaml
           mountPath: /etc/kubernetes/audit/audit-secret.yaml
-          readOnly: false
+          readOnly: true
           pathType: File
+        - name: "audit-log"
+          hostPath: /var/log/kubernetes/
+          mountPath: /var/log/kubernetes/
+          readOnly: false
+          pathType: DirectoryOrCreate
 ```
 then run the following command:
 ```
@@ -126,6 +132,7 @@ Containers:
       kube-apiserver
       --advertise-address=10.89.0.2
       --allow-privileged=true
+      --audit-log-path=/var/log/kubernetes/kube-api-audit.log
       --audit-policy-file=/etc/kubernetes/audit/audit-secret.yaml
       --authorization-mode=Node,RBAC
       --client-ca-file=/etc/kubernetes/pki/ca.crt
@@ -161,9 +168,24 @@ Volumes:
     Type:          HostPath (bare host directory volume)
     Path:          /etc/kubernetes/audit/audit-secret.yaml
     HostPathType:  File
+  audit-log:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/log/kubernetes/
+    HostPathType:  DirectoryOrCreate
 ...
 ```
+to retrieve the log file, use the following command (here with podman but works with docker too):
+```
+podman exec kind-ch05-control-plane cat /var/log/kubernetes/kube-api-audit.log > kube-api-audit.log
+```
+resulting in the creation of file ```kube-api-audit.log``` locally on your computer. A copy of the file related to this example is available in this folder.
 
+Here is an extract:
+```JSON
+{"kind":"Event","apiVersion":"audit.k8s.io/v1","level":"Metadata","auditID":"721b05e1-6848-477c-88ad-fea03ee2d2c2","stage":"ResponseComplete","requestURI":"/api/v1/namespaces/kube-system/secrets/bootstrap-token-abcdef?timeout=10s","verb":"get","user":{"username":"kubernetes-admin","groups":["system:masters","system:authenticated"]},"sourceIPs":["10.89.0.4"],"userAgent":"kubeadm/v1.27.3 (linux/amd64) kubernetes/25b4e43","objectRef":{"resource":"secrets","namespace":"kube-system","name":"bootstrap-token-abcdef","apiVersion":"v1"},"responseStatus":{"metadata":{},"status":"Failure","message":"secrets \"bootstrap-token-abcdef\" not found","reason":"NotFound","details":{"name":"bootstrap-token-abcdef","kind":"secrets"},"code":404},"requestReceivedTimestamp":"2023-10-15T20:40:35.701578Z","stageTimestamp":"2023-10-15T20:40:35.705548Z","annotations":{"authorization.k8s.io/decision":"allow","authorization.k8s.io/reason":""}}
+{"kind":"Event","apiVersion":"audit.k8s.io/v1","level":"Metadata","auditID":"d2b646d3-9107-4afc-ab8d-7608056f4e29","stage":"ResponseComplete","requestURI":"/api/v1/namespaces/kube-system/secrets?timeout=10s","verb":"create","user":{"username":"kubernetes-admin","groups":["system:masters","system:authenticated"]},"sourceIPs":["10.89.0.4"],"userAgent":"kubeadm/v1.27.3 (linux/amd64) kubernetes/25b4e43","objectRef":{"resource":"secrets","namespace":"kube-system","name":"bootstrap-token-abcdef","apiVersion":"v1"},"responseStatus":{"metadata":{},"code":201},"requestReceivedTimestamp":"2023-10-15T20:40:35.709387Z","stageTimestamp":"2023-10-15T20:40:35.715316Z","annotations":{"authorization.k8s.io/decision":"allow","authorization.k8s.io/reason":""}}
+{"kind":"Event","apiVersion":"audit.k8s.io/v1","level":"Metadata","auditID":"7784797c-5931-4827-ac3a-f457e2ae7594","stage":"ResponseComplete","requestURI":"/api/v1/namespaces/kube-public/configmaps?timeout=10s","verb":"create","user":{"username":"kubernetes-admin","groups":["system:masters","system:authenticated"]},"sourceIPs":["10.89.0.4"],"userAgent":"kubeadm/v1.27.3 (linux/amd64) kubernetes/25b4e43","objectRef":{"resource":"configmaps","namespace":"kube-public","name":"cluster-info","apiVersion":"v1"},"responseStatus":{"metadata":{},"code":201},"requestReceivedTimestamp":"2023-10-15T20:40:35.754151Z","stageTimestamp":"2023-10-15T20:40:35.758617Z","annotations":{"authorization.k8s.io/decision":"allow","authorization.k8s.io/reason":""}}
+```
 
 ## Conclusion
 **Congratulation! You just enhanced your Kubernetes cluster with auditing capability.
