@@ -1,0 +1,15 @@
+apiVersion: v1 
+kind: Pod 
+metadata: 
+  name: webapp
+  labels: 
+    app: webapp
+  annotations: 
+    vault.hashicorp.com/agent-inject: 'true' 
+    vault.hashicorp.com/role: 'webapp_admin_r' 
+    vault.hashicorp.com/agent-inject-secret-credentials.txt: 'secret/data/webapp/admin' 
+spec: 
+  serviceAccountName: simple-app 
+  containers: 
+  - name: app 
+    image: nginx
