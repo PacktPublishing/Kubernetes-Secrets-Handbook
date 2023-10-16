@@ -4,13 +4,13 @@ EXTERNAL_VAULT_ADDR=$(minikube ssh "dig +short host.docker.internal" | tr -d '\r
 
 echo $EXTERNAL_VAULT_ADDR
 
-/opt/homebrew/bin/helm repo update
-/opt/homebrew/bin/helm repo add hashicorp https://helm.releases.hashicorp.com
-/opt/homebrew/bin/helm install vault hashicorp/vault --set "global.externalVaultAddr=http://$EXTERNAL_VAULT_ADDR:8200" --set="csi.enabled=true"
+helm repo update
+helm repo add hashicorp https://helm.releases.hashicorp.com
+helm install vault hashicorp/vault --set "global.externalVaultAddr=http://$EXTERNAL_VAULT_ADDR:8200" --set="csi.enabled=true"
 
 kubectl apply -f ./vault-sa-token.yaml
 
-#wait for token to be created
+#wait for token to be generated
 sleep 2
 
 VAULT_HELM_SECRET_NAME=$(kubectl get secrets --output=json | jq -r '.items[].metadata | select(.name|startswith("vault")).name')
