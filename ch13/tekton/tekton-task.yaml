@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1 
+kind: Task 
+metadata: 
+  name: print-secret 
+spec: 
+  steps: 
+    - name: print-secret 
+      image: alpine 
+      script: | 
+        #!/bin/sh 
+        echo "$VALUE_FROM_SECRETS"| md5sum  
+      env: 
+      - name: VALUE_FROM_SECRETS 
+        valueFrom: 
+          secretKeyRef: 
+            name: test-secret 
+            key: key 
+---
+apiVersion: tekton.dev/v1beta1 
+kind: TaskRun 
+metadata: 
+  name: print-secret-run 
+spec: 
+  taskRef: 
+    name: print-secret
