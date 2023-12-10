@@ -1,0 +1,27 @@
+name: Read from Secret Manager 
+on: 
+ push: 
+  branches: 
+   - 'main' 
+jobs: 
+ run: 
+  name: 'get secret' 
+  permissions: 
+   id-token: write 
+   contents: read 
+  runs-on: 'ubuntu-latest' 
+  steps: 
+  - id: 'auth' 
+    uses: 'google-github-actions/auth@v1' 
+    with: 
+      workload_identity_provider: 'projects/{project-id}/locations/global/workloadIdentityPools/ga-ksm-pool/providers/github' 
+      service_account: 'github-service-account@${GCP_PROJECT_ID}.iam.gserviceaccount.com' 
+  - id: fetch-secret 
+    uses: google-github-actions/get-secretmanager-secrets@v1 
+    with: 
+      secrets: |
+       - output1:project-name/secret-name
+  - id: 'print' 
+    env: 
+      SECRET: '${{ steps.list-secrets.outputs.output1 }}' 
+    run: echo "$SECRET" 
