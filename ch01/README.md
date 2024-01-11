@@ -1,7 +1,7 @@
-# Understanding Kubernetes Secret Management
+# Understanding Kubernetes Secrets Handbook
 
 ## Content
-This folder for the *Chapter 1* of Kubernetes Secret Management Handbook includes:
+This folder for the *Chapter 1* of Kubernetes Secrets Handbook includes:
 
 - Example 1 from *From containers to Kubernetes*; a how-to to build a container image, run it with Podman/Docker, and then create the YAML manifest to deploy it. 
 - Example 2 from *Secrets within Kubernetes*; a discovery to create and consume ```Secret``` and ```ConfigMap``` from a ```Pod``` perspective and analyze the security exposure. 
