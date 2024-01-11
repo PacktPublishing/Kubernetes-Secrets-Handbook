@@ -1,7 +1,7 @@
 # Encrypting Secret in-transit and at-rest
 
 ## Content
-This folder provides you with a walkthrough the implementation of the Kubernetes ```EncryptionConfiguration``` capabilities for the *Chapter 3* of Kubernetes Secret Management Handbook.  
+This folder provides you with a walkthrough the implementation of the Kubernetes ```EncryptionConfiguration``` capabilities for the *Chapter 3* of Kubernetes Secrets Handbook.  
 
 ## Technical Requirements
 Like in *Chapter 1*, we will be using the followings:
