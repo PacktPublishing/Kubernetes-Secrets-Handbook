@@ -11,7 +11,7 @@ The goals are to:
 ## Get your environment ready
 First clone the git repository:  
 ```
-git clone https://github.com/PacktPublishing/Kubernetes-Secret-Management-Handbook.git 
+git clone https://github.com/PacktPublishing/Kubernetes-Secrets-Handbook.git 
 ```
 
 Verify that the folder is available with your environment:  
@@ -20,12 +20,12 @@ ls -al
 total 16
 drwxr-xr-x   4 romdalf  staff   128 May  6 15:55 .
 drwxr-xr-x  12 romdalf  staff   384 May  6 15:55 ..
-drwxr-xr-x@  7 romdalf  staff   224 May  4 12:16 Kubernetes-Secret-Management-Handbook
+drwxr-xr-x@  7 romdalf  staff   224 May  4 12:16 Kubernetes-Secrets-Handbook
 ```
 
 Go in the folder and the relevant chapter and example:  
 ```
-cd Kubernetes-Secret-Management-Handbook/ch01/example01/
+cd Kubernetes-Secrets-Handbook/ch01/example01/
 ```
 
 Have a look at the content:  
@@ -88,7 +88,7 @@ func main() {
     })
 
         // print message at the console
-        fmt.Println("Kubernetes Secret Management Handbook - Chapter 1 - Example 1 - Hello World")
+        fmt.Println("Kubernetes Secrets Handbook - Chapter 1 - Example 1 - Hello World")
         fmt.Println("--> Server running on http://localhost:8080")
 
         // start the service and listen on the given port
@@ -118,7 +118,7 @@ RUN go build .
 
 FROM registry.access.redhat.com/ubi8/ubi-micro@sha256:6a56010de933f172b195a1a575855d37b70a4968be8edb35157f6ca193969ad2
 LABEL org.opencontainers.image.title "Hello from Path"
-LABEL org.opencontainers.inage.description "Kubernetes Secret Management Handbook - Chapter 01 - Containter Build Example"
+LABEL org.opencontainers.inage.description "Kubernetes Secrets Handbook - Chapter 01 - Containter Build Example"
 
 COPY --from=build ./opt/app-root/src/hello .
 
@@ -147,7 +147,7 @@ Browse the details of the "Hello World" container image:
 ![](./images/podmand-desktop-06.png)
 
 ### Build the "Hello World" image from the CLI 
-From the path ```Kubernetes-Secret-Management-Handbook/ch01/example01/```, run the following command:
+From the path ```Kubernetes-Secrets-Handbook/ch01/example01/```, run the following command:
 
 ```bash 
 podman build . --tag hello-path:0.1
@@ -173,7 +173,7 @@ go: to add module requirements and sums:
 [2/2] STEP 1/6: FROM registry.access.redhat.com/ubi8/ubi-micro@sha256:6a56010de933f172b195a1a575855d37b70a4968be8edb35157f6ca193969ad2
 [2/2] STEP 2/6: LABEL org.opencontainers.image.title "Hello from Path"
 --> 9d3ccc166e60
-[2/2] STEP 3/6: LABEL org.opencontainers.inage.description "Kubernetes Secret Management Handbook - Chapter 01 - Containter Build Example"
+[2/2] STEP 3/6: LABEL org.opencontainers.inage.description "Kubernetes Secrets Handbook - Chapter 01 - Containter Build Example"
 --> 8441f37e701c
 [2/2] STEP 4/6: COPY --from=build ./opt/app-root/src/hello .
 --> f01d2c53e467
@@ -543,7 +543,7 @@ And finally, like with Podman Desktop, you can check the logs too:
 kubectl logs pod/laughingshtern-pod
 ```
 ```
-Kubernetes Secret Management Handbook - Chapter 1 - Example 1 - Hello World
+Kubernetes Secrets Handbook - Chapter 1 - Example 1 - Hello World
 --> Server running on http://localhost:8080
 User requested the URL path: /
 User requested the URL path: /test
