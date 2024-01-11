@@ -1,2 +1,2 @@
-# Kubernetes-Secret-Management-Handbook
-Kubernetes Secret Management Handbook, Published by Packt
+# Kubernetes Secrets Handbook
+Kubernetes Secrets Handbook, Published by Packt
