@@ -11,7 +11,7 @@ The goals are to:
 ## Get your environment ready
 First clone the git repository:  
 ```
-git clone https://github.com/PacktPublishing/Kubernetes-Secret-Management-Handbook.git 
+git clone https://github.com/PacktPublishing/Kubernetes-Secrets-Handbook.git 
 ```
 
 Verify that the folder is available with your environment:  
@@ -20,12 +20,12 @@ ls -al
 total 16
 drwxr-xr-x   4 romdalf  staff   128 May  6 15:55 .
 drwxr-xr-x  12 romdalf  staff   384 May  6 15:55 ..
-drwxr-xr-x@  7 romdalf  staff   224 May  4 12:16 Kubernetes-Secret-Management-Handbook
+drwxr-xr-x@  7 romdalf  staff   224 May  4 12:16 Kubernetes-Secrets-Handbook
 ```
 
 Go in the folder and the relevant chapter and example:  
 ```
-cd Kubernetes-Secret-Management-Handbook/ch05/example01/
+cd Kubernetes-Secrets-Handbook/ch05/example01/
 ```
 
 ## Kube-Bench
