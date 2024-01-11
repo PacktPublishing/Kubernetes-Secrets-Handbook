@@ -6,7 +6,7 @@ This example provide a walthrough to create a secret within Kubernetes and obser
 ### Get your environment ready
 First clone the git repository:  
 ```
-git clone https://github.com/PacktPublishing/Kubernetes-Secret-Management-Handbook.git 
+git clone https://github.com/PacktPublishing/Kubernetes-Secrets-Handbook-Handbook.git 
 ```
 
 Verify that the folder is available with your environment:  
@@ -15,12 +15,12 @@ ls -al
 total 16
 drwxr-xr-x   4 romdalf  staff   128 May  6 15:55 .
 drwxr-xr-x  12 romdalf  staff   384 May  6 15:55 ..
-drwxr-xr-x@  7 romdalf  staff   224 May  4 12:16 Kubernetes-Secret-Management-Handbook
+drwxr-xr-x@  7 romdalf  staff   224 May  4 12:16 Kubernetes-Secrets-Handbook-Handbook
 ```
 
 Go in the folder and the relevant chapter and example:  
 ```
-cd Kubernetes-Secret-Management-Handbook/ch01/example02/
+cd Kubernetes-Secrets-Handbook-Handbook/ch01/example02/
 ```
 
 Have a look at the content:
@@ -52,13 +52,13 @@ sequenceDiagram
 participant User or App
 box Control Plane
 participant etcd
-participant API Server
+participant kube-apiserver
 end
 autonumber
-  User or App->>API Server: create Secret
+  User or App->>kube-apiserver: create Secret
   Note right of User or App: base64 encoded data
-  API Server->>etcd: store Secret
-  API Server->>User or App: Secret created
+  kube-apiserver->>etcd: store Secret
+  kube-apiserver->>User or App: Secret created
 ```
 
 Run the following command: 
@@ -211,27 +211,27 @@ participant kube-apiserver
 participant kube-controller-manager
 participant kube-scheduler
 end
-box Node
+box Compute Node
 participant kubelet
-participant Container runtime
+participant container runtime
 participant Pod
 end
 autonumber
-  User or App->>kube-apiserver: Create Pod
-  kube-apiserver->>etcd: Store Pod Specs
-  kube-apiserver->>kube-controller-manager: Reconcile Desired State
-  kube-controller-manager->>kube-apiserver: Current State different than Desired
-  kube-apiserver->>kube-scheduler: Create Pod
-  kube-scheduler->>kube-apiserver: Available Node
-  kube-apiserver->>etcd: Store Node Specs
-  kube-apiserver->>kubelet: Bind Pod to Node
-  kubelet->>Container runtime: Run Pod
-  kubelet->>kube-apiserver: Get Secret
-  kube-apiserver->>kubelet: Put Secret
-  Container runtime->>kubelet: Ok
-  kubelet->>kube-apiserver: Pod Status
-  kube-apiserver->>etcd: Store Pod Status
-  kube-apiserver->>User or App: Pod Created
+  User or App->>kube-apiserver: create Pod
+  kube-apiserver->>etcd: store Pod specs
+  kube-apiserver->>kube-controller-manager: reconcile desired state
+  kube-controller-manager->>kube-apiserver: current state different than desired
+  kube-apiserver->>kube-scheduler: create Pod
+  kube-scheduler->>kube-apiserver: available node
+  kube-apiserver->>etcd: store Node specs
+  kube-apiserver->>kubelet: bind Pod to node
+  kubelet->>container runtime: run Pod
+  kubelet->>kube-apiserver: get Secret
+  kube-apiserver->>kubelet: put Secret
+  container runtime->>kubelet: OK
+  kubelet->>kube-apiserver: Pod status
+  kube-apiserver->>etcd: store Pod status
+  kube-apiserver->>User or App: Pod created
 ```
 
 To do so, we will be using what is called a ```busybox``` container which provide us with some basic Linux commands. Here is the YAML manifest:
