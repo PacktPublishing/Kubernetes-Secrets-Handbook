@@ -24,7 +24,7 @@ func main() {
     })
 
 	// print message at the console
-	fmt.Println("Kubernetes Secret Management Handbook - Chapter 1 - Example 1 - Hello World")
+	fmt.Println("Kubernetes Secrets Handbook - Chapter 1 - Example 1 - Hello World")
 	fmt.Println("--> Server running on http://localhost:8080")
 
 	// start the service and listen on the given port
