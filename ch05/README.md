@@ -1,7 +1,7 @@
 # Security, Auditing, and Compliance
 
 ## Content
-This folder for the *Chapter 5* of Kubernetes Secret Management Handbook includes:
+This folder for the *Chapter 5* of Kubernetes Secrets Handbook includes:
 
 - Example 1 from *Tools*; how to run kube-bench for a full CIS benchmark. 
 - Example 2 from *Tools*; how to run the compliance operator. 
